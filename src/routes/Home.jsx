@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import { useUpProvider } from "../contexts/UpProvider";  // <- Add this exact line
+
 export default function Home() {
   const auth = useUpProvider();
   const [followers, setFollowers] = useState([]);
