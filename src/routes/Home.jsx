@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import { useUpProvider } from '../contexts/UpProvider';
+
 export default function Home() {
   const auth = useUpProvider();
   const { universalProfile } = auth;
@@ -18,13 +21,20 @@ export default function Home() {
 
   async function handleEmailSubmit(e) {
     e.preventDefault();
-    console.log("Email captured:", email);
-    // Add logic to send the email to backend or API
+
+    await fetch("https://formspree.io/f/info@jimhannontan.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
     setEmail('');
   }
 
   return (
-    <div className="flex flex-col items-center p-4 bg-white">
+    <div className="flex flex-col items-center p-4 bg-black text-white">
       <img
         src="https://pbs.twimg.com/media/GjtzVB4aIAAYzpi?format=jpg&name=large"
         alt="Product"
@@ -33,7 +43,7 @@ export default function Home() {
 
       <button 
         onClick={joinWhitelist} 
-        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded"
+        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         Join Whitelist
       </button>
@@ -52,11 +62,11 @@ export default function Home() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="border border-gray-300 rounded px-4 py-2 w-full max-w-sm"
+          className="border border-gray-400 rounded px-4 py-2 w-full max-w-sm bg-gray-800 text-white placeholder-gray-300"
         />
         <button 
           type="submit"
-          className="mt-3 px-6 py-2 bg-green-500 text-white rounded"
+          className="mt-3 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Submit Email
         </button>
