@@ -12,7 +12,27 @@ export default function Home() {
   }
 
   async function joinWhitelist() {
-    // Logic to join whitelist...
+    const { universalProfile, provider } = auth; 
+  
+    if (!universalProfile || !provider) {
+      console.error("Universal Profile or provider not available");
+      return;
+    }
+  
+    try {
+      const signer = provider.getSigner();
+      const txData = {
+        to: "<Whitelist Smart Contract Address>",
+        data: "<Encoded Function Call Data>",
+      };
+  
+      const tx = await signer.sendTransaction(txData);
+      await tx.wait();  // Wait for confirmation
+      console.log("Successfully joined whitelist!");
+      
+    } catch (error) {
+      console.error("Transaction failed", error);
+    }
   }
 
   return (
