@@ -1,57 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
   const [followers, setFollowers] = useState([]);
 
   useEffect(() => {
-    fetchFollowers();
+    // Placeholder to fetch followers
   }, []);
 
-  async function fetchFollowers() {
-    // Logic to fetch whitelist followers...
-  }
-
   async function joinWhitelist() {
-    // Logic to join whitelist...
+    // Logic to join whitelist
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', textAlign: 'center' }}>
+    <div className="max-w-xl mx-auto p-6 font-sans">
+
       {/* Product Image */}
       <img
         src="https://pbs.twimg.com/media/GjtzVB4aIAAYzpi?format=jpg&name=large"
         alt="Near Field Circuit"
-        style={{ width: '100%', borderRadius: '8px' }}
+        className="w-full rounded-xl shadow-md"
       />
 
-      {/* Title */}
-      <h1 style={{ fontSize: '32px', margin: '20px 0 10px' }}>Near Field Circuit</h1>
-
-      {/* Subtitle */}
-      <p style={{ fontSize: '18px', margin: '0 0 30px', color: '#555' }}>Edition 1 — Beta</p>
+      {/* Title and Edition */}
+      <div className="mt-6 text-left">
+        <h1 className="text-3xl font-semibold text-gray-900">Near Field Circuit</h1>
+        <p className="text-base text-gray-600 mt-2">Edition 01 — Beta</p>
+      </div>
 
       {/* Join Whitelist Button */}
       <button
         onClick={joinWhitelist}
-        style={{
-          backgroundColor: '#000',
-          color: '#fff',
-          padding: '10px 20px',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '16px'
-        }}
+        className="mt-6 bg-black text-white font-medium px-6 py-2.5 rounded-md hover:bg-gray-800 transition"
       >
         Join Whitelist
       </button>
 
-      {/* Whitelist Members Placeholder */}
-      <div style={{ marginTop: '40px' }}>
-        {followers.map((follower, index) => (
-          <p key={index}>{follower}</p>
+      {/* Followers Section */}
+      <div className="mt-8">
+        {followers.map((follower, idx) => (
+          <p key={idx} className="text-gray-700">{follower}</p>
         ))}
       </div>
+
+      {/* Follow on X */}
+      <div className="mt-10 border-t border-gray-200 pt-4 flex items-center">
+        <a
+          href="https://x.com/phygicoil"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center text-gray-600 hover:text-black transition"
+        >
+          Follow on X
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="ml-2">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+          </svg>
+        </a>
+      </div>
+
     </div>
   );
 }
