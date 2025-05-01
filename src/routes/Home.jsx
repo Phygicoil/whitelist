@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useUniversalProfile } from "@lukso/up-provider";
+import { useUpProvider } from '../contexts/UpProvider';
 
 export default function Home() {
   const { universalProfile } = useUniversalProfile();
