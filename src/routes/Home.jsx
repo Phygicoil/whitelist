@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useUpProvider } from "../contexts/UpProvider";
+import React, { useEffect, useState } from 'react';
 
 export default function Home() {
-  const auth = useUpProvider();
   const [followers, setFollowers] = useState([]);
 
   useEffect(() => {
@@ -10,65 +8,49 @@ export default function Home() {
   }, []);
 
   async function fetchFollowers() {
-    // Fetch followers logic here...
+    // Logic to fetch whitelist followers...
   }
 
   async function joinWhitelist() {
-    // Add current user to whitelist logic here...
+    // Logic to join whitelist...
   }
 
   return (
-    <div className="flex flex-col items-center p-8 bg-white text-black font-sans">
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', textAlign: 'center' }}>
       {/* Product Image */}
       <img
         src="https://pbs.twimg.com/media/GjtzVB4aIAAYzpi?format=jpg&name=large"
         alt="Near Field Circuit"
-        className="w-full h-auto rounded-lg shadow-md"
+        style={{ width: '100%', borderRadius: '8px' }}
       />
 
-      {/* Main Heading */}
-      <h1 className="text-4xl font-semibold mt-10 mb-2">
-        Near Field Circuit
-      </h1>
+      {/* Title */}
+      <h1 style={{ fontSize: '32px', margin: '20px 0 10px' }}>Near Field Circuit</h1>
 
-      {/* Edition Info */}
-      <p className="text-xl text-gray-600 mb-8">
-        Edition 01 — Beta
-      </p>
+      {/* Subtitle */}
+      <p style={{ fontSize: '18px', margin: '0 0 30px', color: '#555' }}>Edition 1 — Beta</p>
 
-      {/* Whitelist Button */}
+      {/* Join Whitelist Button */}
       <button
         onClick={joinWhitelist}
-        className="px-8 py-3 bg-black text-white text-lg rounded-full hover:bg-gray-700 transition duration-300 mb-8"
+        style={{
+          backgroundColor: '#000',
+          color: '#fff',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontSize: '16px'
+        }}
       >
-        Join Waitlist
+        Join Whitelist
       </button>
 
-      {/* Whitelist Members Heading */}
-      <h2 className="text-xl text-gray-600 font-medium mb-8">
-        Whitelist Members
-      </h2>
-
-      {/* List of Followers */}
-      <div className="w-full max-w-md text-center">
-        {followers.map((follower, idx) => (
-          <p key={idx} className="mb-2">{follower}</p>
+      {/* Whitelist Members Placeholder */}
+      <div style={{ marginTop: '40px' }}>
+        {followers.map((follower, index) => (
+          <p key={index}>{follower}</p>
         ))}
-      </div>
-
-      {/* Follow on X */}
-      <div className="mt-16 flex flex-col items-center">
-        <a
-          href="https://x.com/phygicoil"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xl text-gray-600 font-medium hover:text-gray-800 transition"
-        >
-          Follow on X
-        </a>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="mt-2 text-black">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-        </svg>
       </div>
     </div>
   );
