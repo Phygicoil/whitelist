@@ -3,7 +3,6 @@ import { useUpProvider } from '../contexts/UpProvider';
 
 export default function Home() {
   const auth = useUpProvider();
-  const { universalProfile } = auth;
   const [followers, setFollowers] = useState([]);
   const [email, setEmail] = useState('');
 
@@ -12,65 +11,60 @@ export default function Home() {
   }, []);
 
   async function fetchFollowers() {
-    // Logic clearly to fetch current whitelist UPs
+    // Fetch whitelist UPs logic
   }
 
   async function joinWhitelist() {
-    // Logic clearly to add current UP to whitelist
+    // Logic to join whitelist
   }
 
-  async function handleEmailSubmit(e) {
-    e.preventDefault();
-
-    await fetch("https://formspree.io/f/info@jimhannontan.com", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
-
-    setEmail('');
+  async function handleEmailSubmit() {
+    window.location.href = `mailto:info@jimhannontan.com?subject=Whitelist Signup&body=Email: ${email}`;
   }
 
   return (
-    <div className="flex flex-col items-center p-4 bg-black text-white">
+    <div className="flex flex-col items-center justify-center p-6 bg-black min-h-screen text-white">
+
+      <h1 className="text-4xl font-semibold mb-6">Near Field Circuit</h1>
+
       <img
         src="https://pbs.twimg.com/media/GjtzVB4aIAAYzpi?format=jpg&name=large"
         alt="Product"
-        className="max-w-full h-auto"
+        className="max-w-xl w-full h-auto rounded-md mb-6 shadow-lg"
       />
 
-      <button 
-        onClick={joinWhitelist} 
-        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      <button
+        onClick={joinWhitelist}
+        className="mt-4 px-8 py-3 bg-blue-500 hover:bg-blue-600 text-xl rounded transition"
       >
         Join Whitelist
       </button>
 
-      <div className="mt-4 w-full">
-        <h3 className="font-semibold mb-2">Whitelist Members:</h3>
-        {followers.map((follower, idx) => (
-          <p key={idx}>{follower}</p>
-        ))}
+      <div className="mt-8 w-full max-w-xl">
+        <h2 className="text-2xl font-semibold mb-4">Whitelist Members:</h2>
+        <div className="bg-gray-800 rounded p-4 overflow-y-auto max-h-64">
+          {followers.map((follower, idx) => (
+            <p key={idx} className="text-lg border-b border-gray-700 py-1">{follower}</p>
+          ))}
+        </div>
       </div>
 
-      <form onSubmit={handleEmailSubmit} className="mt-6 flex flex-col items-center w-full">
+      <div className="mt-8 w-full max-w-xl flex flex-col md:flex-row md:justify-between gap-4">
         <input
           type="email"
-          placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
-          className="border border-gray-400 rounded px-4 py-2 w-full max-w-sm bg-gray-800 text-white placeholder-gray-300"
+          placeholder="Enter your email"
+          className="p-3 rounded-md flex-grow text-black text-lg"
         />
-        <button 
-          type="submit"
-          className="mt-3 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        <button
+          onClick={handleEmailSubmit}
+          className="px-6 py-3 bg-green-500 hover:bg-green-600 text-xl rounded transition"
         >
-          Submit Email
+          Submit
         </button>
-      </form>
+      </div>
+
     </div>
   );
 }
