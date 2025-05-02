@@ -1,75 +1,82 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { ethers } from "ethers";
 
-export default function Home() {
+const CONTRACT_ADDRESS = "0xb8Cb9C6bE4341C8061035C0839B1f5B538b11892";
+
+const ABI = [/* Paste your ABI here exactly as provided */];
+
+const emojiId = ethers.utils.formatBytes32String("\u200B"); // zero-width space emoji
+
+export default function Whitelist() {
   const [followers, setFollowers] = useState([]);
 
   useEffect(() => {
-    fetchFollowers();
+    fetchWhitelistMembers();
   }, []);
 
-  async function fetchFollowers() {
-    // Logic to fetch whitelist followers...
-  }
-
   async function joinWhitelist() {
-    const { universalProfile, provider } = auth; 
-  
-    if (!universalProfile || !provider) {
-      console.error("Universal Profile or provider not available");
+    if (!window.lukso) {
+      alert("Please install the Universal Profile extension.");
       return;
     }
-  
+
+    const provider = new ethers.providers.Web3Provider(window.lukso);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const userAddress = await signer.getAddress();
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
     try {
-      const signer = provider.getSigner();
-      const txData = {
-        to: "<Whitelist Smart Contract Address>",
-        data: "<Encoded Function Call Data>",
-      };
-  
-      const tx = await signer.sendTransaction(txData);
-      await tx.wait();  // Wait for confirmation
-      console.log("Successfully joined whitelist!");
-      
+      const tx = await contract.react(userAddress, emojiId, "0x", { value: 0 });
+      await tx.wait();
+      alert("You've joined the whitelist!");
+      fetchWhitelistMembers();
     } catch (error) {
-      console.error("Transaction failed", error);
+      console.error("Whitelist join error:", error);
+      alert("Failed to join whitelist.");
     }
+  }
+
+  async function fetchWhitelistMembers() {
+    const provider = new ethers.providers.JsonRpcProvider("https://rpc.lukso.gateway.fm");
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+    const filter = contract.filters.Reacted(null, null, null);
+    const events = await contract.queryFilter(filter, 0, "latest");
+
+    const whitelistAddresses = events
+      .filter(event => event.args.emojiId === emojiId)
+      .map(event => event.args.from);
+
+    const uniqueAddresses = [...new Set(whitelistAddresses)];
+    setFollowers(uniqueAddresses);
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', textAlign: 'center' }}>
-      {/* Product Image */}
+    <div className="flex flex-col items-center p-8 bg-[#080808] text-white min-h-screen">
+      <h1 className="text-4xl font-semibold my-8">Near Field Circuit</h1>
+      <p className="text-xl mb-4">Edition 1 - Beta</p>
+
       <img
         src="https://pbs.twimg.com/media/GjtzVB4aIAAYzpi?format=jpg&name=large"
-        alt="Near Field Circuit"
-        style={{ width: '100%', borderRadius: '8px' }}
+        alt="Product"
+        className="max-w-full h-auto rounded-lg shadow-lg"
       />
 
-      {/* Title */}
-      <h1 style={{ fontSize: '32px', margin: '20px 0 10px' }}>Near Field Circuit</h1>
-
-      {/* Subtitle */}
-      <p style={{ fontSize: '18px', margin: '0 0 30px', color: '#555' }}>Edition 1 — Beta</p>
-
-      {/* Join Whitelist Button */}
       <button
         onClick={joinWhitelist}
-        style={{
-          backgroundColor: '#000',
-          color: '#fff',
-          padding: '10px 20px',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '16px'
-        }}
+        className="mt-8 px-8 py-3 bg-white text-black text-lg rounded-full hover:bg-gray-200 transition duration-300"
       >
         Join Whitelist
       </button>
 
-      {/* Whitelist Members Placeholder */}
-      <div style={{ marginTop: '40px' }}>
-        {followers.map((follower, index) => (
-          <p key={index}>{follower}</p>
+      <div className="mt-8 w-full max-w-lg text-center">
+        <h3 className="font-semibold text-2xl mb-4">Whitelist Members:</h3>
+        {followers.length === 0 && <p>No members yet.</p>}
+        {followers.map((address, idx) => (
+          <div key={idx} className="mb-2">
+            {address}
+          </div>
         ))}
       </div>
     </div>
