@@ -2,10 +2,34 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
 const CONTRACT_ADDRESS = "0xb8Cb9C6bE4341C8061035C0839B1f5B538b11892";
+const ABI = [
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_addr", "type": "address" },
+      { "internalType": "bytes32", "name": "_emojiId", "type": "bytes32" },
+      { "internalType": "bytes", "name": "_message", "type": "bytes" }
+    ],
+    "name": "react",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "bytes32", "name": "emojiId", "type": "bytes32" },
+      { "indexed": true, "internalType": "address", "name": "from", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "to", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "price", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "dt", "type": "uint256" }
+    ],
+    "name": "Reacted",
+    "type": "event"
+  }
+];
 
-const ABI = [/* Paste your ABI here exactly as provided */];
-
-const emojiId = ethers.utils.formatBytes32String("\u200B"); // zero-width space emoji
+// Consistent emojiId definition here:
+const emojiId = ethers.utils.formatBytes32String("\u200B"); // zero-width space
 
 export default function Whitelist() {
   const [followers, setFollowers] = useState([]);
@@ -41,14 +65,12 @@ export default function Whitelist() {
     const provider = new ethers.providers.JsonRpcProvider("https://rpc.lukso.gateway.fm");
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
-    const filter = contract.filters.Reacted(null, null, null);
+    const filter = contract.filters.Reacted(emojiId, null, null);
     const events = await contract.queryFilter(filter, 0, "latest");
 
-    const whitelistAddresses = events
-      .filter(event => event.args.emojiId === emojiId)
-      .map(event => event.args.from);
-
+    const whitelistAddresses = events.map(event => event.args.from);
     const uniqueAddresses = [...new Set(whitelistAddresses)];
+
     setFollowers(uniqueAddresses);
   }
 
