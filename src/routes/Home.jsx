@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { ethers, BrowserProvider, JsonRpcProvider } from "ethers";
 
 const CONTRACT_ADDRESS = "0xb8Cb9C6bE4341C8061035C0839B1f5B538b11892";
 const ABI = [
@@ -28,8 +28,7 @@ const ABI = [
   }
 ];
 
-// Consistent emojiId definition here:
-const emojiId = ethers.utils.formatBytes32String("\u200B"); // zero-width space
+const emojiId = ethers.encodeBytes32String("\u200B");
 
 export default function Whitelist() {
   const [followers, setFollowers] = useState([]);
@@ -44,9 +43,9 @@ export default function Whitelist() {
       return;
     }
 
-    const provider = new ethers.providers.Web3Provider(window.lukso);
+    const provider = new BrowserProvider(window.lukso);
     await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
+    const signer = await provider.getSigner();
     const userAddress = await signer.getAddress();
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
@@ -62,7 +61,7 @@ export default function Whitelist() {
   }
 
   async function fetchWhitelistMembers() {
-    const provider = new ethers.providers.JsonRpcProvider("https://rpc.lukso.gateway.fm");
+    const provider = new JsonRpcProvider("https://rpc.lukso.gateway.fm");
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
     const filter = contract.filters.Reacted(emojiId, null, null);
